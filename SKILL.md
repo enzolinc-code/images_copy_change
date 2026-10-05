@@ -47,6 +47,15 @@ cd D:\AutoTaobao\shangji\liebian
 
 卡模板见 `assets/style.json.template`；机制细节见 [references/pipeline.md](references/pipeline.md)。
 
+脚本（不依赖本机路径，可单独跑）：
+
+```bash
+python scripts/style_gallery.py --root <风格库目录>          # 生成/刷新选择器页面
+python scripts/style_pack_publish.py --pack <卡目录> --root <风格库目录>
+```
+
+安装与依赖、以及"没有流水线时怎么手工走一遍"见 [references/install.md](references/install.md)。
+
 ## 3. 铁律（都是实测踩出来的）
 
 1. **取值写具体名词**：写"换成同情绪的另一动物"模型几乎不动；写"换成一只圆头小老鼠"才生效。
