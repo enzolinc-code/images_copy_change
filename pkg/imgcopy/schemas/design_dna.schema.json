@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "liebian/design_dna.schema.json",
+  "title": "DesignDNA",
+  "type": "object",
+  "required": ["parent_id", "core_gene", "mutable_gene", "disposable_gene", "allowed_operators", "ip_risk"],
+  "properties": {
+    "parent_id": { "type": "string" },
+    "core_gene": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/gene" } },
+    "mutable_gene": { "type": "array", "items": { "$ref": "#/$defs/gene" } },
+    "disposable_gene": { "type": "array", "items": { "$ref": "#/$defs/gene" } },
+    "protected_regions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["bbox", "reason"],
+        "properties": {
+          "bbox": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+          "reason": { "type": "string" }
+        }
+      }
+    },
+    "allowed_operators": { "type": "array", "items": { "type": "string" } },
+    "blocked_operators": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["operator", "why"],
+        "properties": { "operator": { "type": "string" }, "why": { "type": "string" } }
+      }
+    },
+    "ip_risk": { "enum": ["none", "low", "high"] },
+    "summary": { "type": "string" },
+    "weights": { "type": "object" },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "gene": {
+      "type": "object",
+      "required": ["gene_id", "gene_type", "value", "weight", "confidence", "evidence"],
+      "properties": {
+        "gene_id": { "type": "string" },
+        "gene_type": { "enum": ["subject", "palette", "composition", "style", "emotion", "prop", "text"] },
+        "value": { "type": "string" },
+        "weight": { "type": "number", "minimum": 0, "maximum": 1 },
+        "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+        "evidence": { "type": "object" },
+        "in_fill_region": { "type": "boolean" },
+        "human": { "type": "string" }
+      }
+    }
+  }
+}

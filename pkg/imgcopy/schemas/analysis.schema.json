@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "liebian/analysis.schema.json",
+  "title": "Analysis",
+  "type": "object",
+  "required": ["parent_id", "facts", "labels"],
+  "properties": {
+    "parent_id": { "type": "string" },
+    "facts_source": { "type": "string" },
+    "labels_source": { "type": "string" },
+    "facts": {
+      "type": "object",
+      "required": ["palette", "subject_bbox", "subject_area_ratio", "whitespace_ratio",
+                   "visual_center", "edge_density", "camera_overlap_ratio"],
+      "additionalProperties": true,
+      "properties": {
+        "palette": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["hex", "ratio", "role"],
+            "properties": {
+              "hex": { "type": "string", "pattern": "^#[0-9a-fA-F]{6}$" },
+              "ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+              "role": { "enum": ["dominant", "secondary", "accent", "background"] },
+              "lab": { "type": "array", "items": { "type": "number" } }
+            }
+          }
+        },
+        "color_temperature": { "type": "number", "minimum": -1, "maximum": 1 },
+        "saturation": { "type": "number", "minimum": 0, "maximum": 1 },
+        "contrast": { "type": "number", "minimum": 0, "maximum": 1 },
+        "subject_bbox": { "type": "array", "items": { "type": "number" }, "minItems": 4, "maxItems": 4 },
+        "subject_area_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "whitespace_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "element_count": { "type": "integer", "minimum": 0 },
+        "element_spread": { "type": "number" },
+        "visual_center": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+        "edge_density": { "type": "number" },
+        "symmetry_score": { "type": "number" },
+        "gradient_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "color_count": { "type": "integer", "minimum": 1 },
+        "camera_overlap_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "edge_margin_ratio": { "type": "number", "minimum": 0, "maximum": 1 },
+        "laplacian_var": { "type": "number" },
+        "fill_ratio": { "type": ["number", "null"] }
+      }
+    },
+    "labels": {
+      "type": "object",
+      "required": ["subject", "composition", "style", "emotion", "visual_hooks"],
+      "additionalProperties": true,
+      "properties": {
+        "subject": {
+          "type": "object",
+          "required": ["primary", "ip_like"],
+          "additionalProperties": true,
+          "properties": {
+            "primary": { "type": "string" },
+            "detail": { "type": "string" },
+            "count": { "type": "integer", "minimum": 0 },
+            "ip_like": { "type": "boolean" },
+            "ip_note": { "type": "string" }
+          }
+        },
+        "composition": { "type": "array", "items": { "type": "string" } },
+        "style": { "type": "object", "additionalProperties": { "type": "number" } },
+        "style_detail": { "type": "array", "items": { "type": "string" } },
+        "emotion": { "type": "object", "additionalProperties": { "type": "number" } },
+        "visual_hooks": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["desc", "strength"],
+            "properties": {
+              "desc": { "type": "string" },
+              "strength": { "type": "number", "minimum": 0, "maximum": 1 },
+              "region": { "type": "array", "items": { "type": "number" } }
+            }
+          }
+        },
+        "text": {
+          "type": "object",
+          "properties": {
+            "present": { "type": "boolean" },
+            "content": { "type": "string" },
+            "role": { "enum": ["none", "hook", "decoration"] }
+          }
+        },
+        "notes": { "type": "string" }
+      }
+    },
+    "judge_meta": { "type": "object" }
+  }
+}

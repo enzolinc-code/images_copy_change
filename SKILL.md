@@ -36,6 +36,29 @@ cd D:\AutoTaobao\shangji\liebian
 | 导出 | `-m src.cli export <parent_id>` | 只导通过质检的；`--include-rejected` 才连淘汰的一起导 |
 | 交付 | `-m src.cli handoff <parent_id> --drop` | 印刷目录三件套（`_印刷`/`_预览`/无框整幅）+ 图案库整幅成品图 |
 
+### 1.1 也可以直接用仓库自带的那份流水线（`pkg/`）
+
+本仓库自带一份**可移植**的流水线（从上面那台本机版本抽出来的），克隆下来就能跑：不依赖任何
+本机绝对路径，状态用 JSON 文件存，出图后端默认是**不花钱**的 replay 假后端。
+
+```bash
+export IMGCOPY_HOME=/path/to/workdir      # PowerShell: $env:IMGCOPY_HOME="D:\work"
+python pkg/run.py doctor                  # 自检：依赖、配置、路径、后端
+python pkg/run.py ingest                  # 读 <workdir>/data/inputs/parent_input.json
+python pkg/run.py analyze --all           # 视觉拆解（agent 模式会停下来等标签）
+python pkg/run.py dna --all               # 提取基因
+python pkg/run.py plan --all --count 5 --operators color,composition [--style <卡id>]
+python pkg/run.py generate <parent_id>    # 默认 dry-run；确认后加 --go
+python pkg/run.py qc --all                # 质检 + 批次内去重
+python pkg/run.py export --all            # 只导通过质检的
+python pkg/run.py handoff --all --drop     # 交接单 + 整幅成品图 +（能出时）印刷三件套
+```
+
+- 工作目录全在 `IMGCOPY_HOME` 下（`parents/ out/ data/`）；随包默认配置在
+  `pkg/imgcopy/config/`，你自己的路径写进 `<IMGCOPY_HOME>/config/settings.json` 覆盖同名项。
+- 真出图：把 `generator.type` 改成 `o1key` 并填 `generator.o1key.script`（或 `comfyui`）。
+- 依赖：Python 3.10+、numpy、Pillow、opencv-python。细节见 [references/install.md](references/install.md)。
+
 ## 2. 风格卡（选卡即复用）
 
 把做好的一个风格冻结成卡片，以后换母款直接复用：卡片决定**算子取值池 + 文字规则**。

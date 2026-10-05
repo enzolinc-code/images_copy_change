@@ -64,3 +64,22 @@ naming / qc{known_risk} / examples / example_sources / how_to_use`。
 & $py -X utf8 -m src.cli export P_20261005_0001
 & $py -X utf8 -m src.cli handoff P_20261005_0001 --drop
 ```
+
+## 可移植版（`pkg/imgcopy/`）的对应关系
+
+同样的流程，把 `-m src.cli` 换成 `pkg/run.py`（或 `python -m imgcopy`，需先把 `pkg/` 加进 `sys.path`）：
+
+| 本机版 | 可移植版 |
+|---|---|
+| `liebian\config\*` | `pkg/imgcopy/config/*`，可用 `<IMGCOPY_HOME>/config/*` 覆盖同名项 |
+| `liebian\parents\<id>\` | `<IMGCOPY_HOME>/parents/<id>/`（结构一致：parent/analysis/dna/plan/children） |
+| `liebian\data\liebian.db` | `<IMGCOPY_HOME>/data/state.json`（JSON 后端，接口同名） |
+| `liebian\out\...` | `<IMGCOPY_HOME>/out/...` |
+| `ROOT`（项目根） | `IMGCOPY_HOME`（默认当前目录） |
+
+模块布局与另一份一致：`ingest.py / analyze/ / dna/ / plan/ / prompt/ / generate/ / qc/ /
+similarity/ / select/ / tools/`，逐文件对应，方便两边对照改动。
+
+`generate/` 三个后端：`replay`（免费假后端，默认）、`o1key`（付费，按张）、`comfyui`（本地免费）。
+`handoff` 的整幅成品图在没配模板工具时用「contain 缩放 + 镜像延展补边」实现：
+满幅、不留白边、不叠任何定位图形。

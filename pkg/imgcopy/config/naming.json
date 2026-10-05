@@ -1,0 +1,10 @@
+{
+  "_说明": "子款设计名规则。上架链路硬规则：标题 = 素材目录名 + 固定后缀，且目录名汉字数受平台权重限制。",
+  "max_hanzi": 7,
+  "_max_hanzi说明": "与 taobao-case/config/shop.json 的 titleRule 对齐（汉字按 2 计权重，前缀最多 20 权重）。",
+  "max_variant_hanzi": 2,
+  "_max_variant说明": "子款名 = 母款题材词 + 变异词，变异词最多 2 个汉字。",
+  "forbidden": ["仿", "高仿", "同款"],
+  "_forbidden说明": "合规：避免出现易触发平台判定的词。",
+  "child_id_pattern": "{parent_id}_{operator}_{dose}_{seq:02d}"
+}

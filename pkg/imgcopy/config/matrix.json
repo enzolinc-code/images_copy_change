@@ -1,0 +1,28 @@
+{
+  "_说明": "默认裂变矩阵：一个母款出 10 张。8 张单变量（可归因）+ 2 张组合（探索）。改这个文件即可改产出结构，不用改代码。",
+  "target_count": 10,
+  "single_variable": [
+    { "operator": "color", "dose": "L1", "n": 1 },
+    { "operator": "color", "dose": "L2", "n": 1 },
+    { "operator": "composition", "dose": "L1", "n": 1 },
+    { "operator": "accessory", "dose": "L1", "n": 1 },
+    { "operator": "expression", "dose": "L2", "n": 1 },
+    { "operator": "subject", "dose": "L2", "n": 1 },
+    { "operator": "style", "dose": "L1", "n": 1 },
+    { "operator": "motif", "dose": "L2", "n": 1 },
+    { "operator": "semantic", "dose": "L2", "n": 1 }
+  ],
+  "combos": [
+    { "parts": ["color", "accessory"], "dose": "L2", "n": 1 },
+    { "parts": ["color", "expression"], "dose": "L2", "n": 1 }
+  ],
+  "fallback": {
+    "_说明": "某算子被禁用时（例如 ip_risk=high 禁用 subject），按这个顺序补位，保证总数不变。",
+    "order": ["motif", "color", "accessory", "composition", "expression", "semantic", "style", "combo"]
+  },
+  "by_theme": {
+    "_说明": "按母款题材微调：文字情绪类多出配色/文案位；国风类少做风格迁移。留空表示用默认矩阵。",
+    "文字情绪": { "boost": ["color"], "reduce": ["style"] },
+    "国风东方": { "boost": ["color", "accessory"], "reduce": ["style", "subject"] }
+  }
+}

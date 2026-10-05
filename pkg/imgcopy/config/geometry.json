@@ -1,0 +1,24 @@
+{
+  "_说明": "画布与壳体几何。用于「摄像头遮挡主体」「关键元素靠边」这类确定性质检。",
+  "template": "own_shop",
+  "calibrated": false,
+  "_calibrated说明": "false = 用占位值（现有 7 套模板的并集，宁可盖大）。重标完成后改成 true 并写入 camera_calib_samples。",
+
+  "artwork_wh": [1252, 2232],
+
+  "face_rect_in_artwork_norm": [0.1511, 0.0786, 0.8528, 0.9022],
+  "_face说明": "壳面在画布里的位置（约为画布的 15%~85% x 8%~90%）。界外的图案只在印刷模板裁切时用到。",
+  "visible_ratio": 0.5623,
+
+  "camera_rect_in_artwork_norm": [0.1511, 0.0786, 0.8247, 0.3975],
+  "_camera说明": "【占位值】取自现有模板并集（wf/sun 的上限）。摄像头挖孔区落在这里面；核心基因压进这个区域 = 挖孔会吃掉主体。重标后替换。",
+
+  "safe_margin_norm": 0.05,
+  "_safe_margin说明": "关键元素离画布边缘小于这个比例算「太靠边」。",
+
+  "calibration": {
+    "method": "复用 pattern-extract/calibrate-camera.py，不要另写一套",
+    "needs": "本店直拍商品图（能看清摄像头位置的那几张）+ 对应母款图案",
+    "status": "pending"
+  }
+}

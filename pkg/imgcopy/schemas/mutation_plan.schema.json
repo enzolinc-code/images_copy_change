@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "liebian/mutation_plan.schema.json",
+  "title": "MutationPlan",
+  "type": "object",
+  "required": ["plan_id", "parent_id", "target_count", "specs", "skeleton_ratio"],
+  "properties": {
+    "plan_id": { "type": "string" },
+    "parent_id": { "type": "string" },
+    "target_count": { "type": "integer", "minimum": 1, "maximum": 60 },
+    "skeleton_ratio": { "type": "number", "minimum": 0.5, "maximum": 1 },
+    "created_by": { "type": "string" },
+    "coverage": { "type": "object" },
+    "specs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["child_id", "parent_id", "generation", "operator", "dose",
+                     "mutation_strength", "target_gene", "preserved_gene", "variant_axis"],
+        "properties": {
+          "child_id": { "type": "string" },
+          "parent_id": { "type": "string" },
+          "generation": { "type": "integer", "minimum": 1 },
+          "operator": { "enum": ["subject", "expression", "pose", "color", "style",
+                                 "composition", "accessory", "semantic", "combo"] },
+          "operator_parts": { "type": "array", "items": { "type": "string" } },
+          "dose": { "enum": ["L1", "L2", "L3"] },
+          "mutation_strength": { "type": "number", "minimum": 0, "maximum": 0.8 },
+          "target_gene": { "type": "array", "items": { "type": "string" } },
+          "preserved_gene": { "type": "array", "items": { "type": "string" } },
+          "target_region": { "enum": ["global", "subject", "background", "accessory", null] },
+          "region_lock": { "type": "boolean" },
+          "variant_axis": { "type": "string" },
+          "intent": { "type": "string" },
+          "value": { "type": "string" },
+          "negative": { "type": "array", "items": { "type": "string" } },
+          "child_name": { "type": "string" }
+        }
+      }
+    }
+  }
+}

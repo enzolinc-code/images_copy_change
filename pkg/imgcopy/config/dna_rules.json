@@ -1,0 +1,78 @@
+{
+  "_说明": "基因分类规则。改这里就能改「什么算核心基因」，代码里不写死。",
+
+  "subject": {
+    "weight": 0.9,
+    "kind_weight": 0.8,
+    "core_when_area_ratio_gte": 0.12,
+    "size_buckets": [[0.35, "超大"], [0.2, "大"], [0.0, "中"]],
+    "_size_buckets说明": "按主体占壳面的比例给「视觉重量」定级，用于生成 subject_slot 基因。",
+    "_说明": "主体占壳面 12% 以上就算核心视觉重量；太小则降级为可变。"
+  },
+  "composition": {
+    "_说明": "构图骨架的保护由 subject_slot（位置/大小）+ composition_visual_weight（视觉重心）承担，这两条是核心；center/large-single-object 这类**排布方式**本身归可变，否则「构图变异」这个算子会自相矛盾。",
+    "core_patterns": [],
+    "core_when_subject_area_ratio_gte": 0.12,
+    "_阈值说明": "主体占壳面 ≥12% 时，center/large-single-object 这类骨架算核心（大留白的设计主体面积本来就小，阈值太严会把骨架漏掉）。",
+    "core_weight": 0.75,
+    "mutable_weight": 0.5
+  },
+  "palette": {
+    "_说明": "具体色值（#53a2d3 这种）全部归可变 —— 「配色变异」就是冲着它们去的；真正要保护的是**色系家族**（冷调/暖调、青/蓝/绿）与饱和度档位，那条单独成一条核心基因 palette_family。",
+    "family_core_weight": 0.7,
+    "family_min_ratio": 0.15,
+    "background_core_when_ratio_gte": 1.01,
+    "background_core_weight": 0.7,
+    "dominant_core_when_ratio_gte": 1.01,
+    "dominant_core_weight": 0.8,
+    "accent_weight": 0.45
+  },
+  "style": {
+    "core_when_weight_gte": 0.7,
+    "core_weight": 0.85,
+    "mutable_weight_floor": 0.35
+  },
+  "emotion": {
+    "_说明": "最高权重的情绪是核心（需求第 7-H：保留情绪价值）。",
+    "core_weight": 0.8,
+    "mutable_weight_floor": 0.3
+  },
+  "hook": {
+    "core_when_strength_gte": 0.75,
+    "core_weight": 0.8
+  },
+  "text": {
+    "_说明": "文字的**位置与视觉重量**永远算核心（实测：不加这条，模型会把母款自带的文字整段删掉，见 R6 的实测反馈）；文字内容本身只有作为钩子时才算核心。",
+    "core_when_role": ["hook"],
+    "position_core_weight": 0.65,
+    "core_weight": 0.7,
+    "mutable_weight": 0.4
+  },
+  "disposable": {
+    "hook_strength_lt": 0.4,
+    "many_elements_gte": 6,
+    "_说明": "吸引力弱的钩子、以及元素数量 ≥6 时的碎小元素，归入可删除。"
+  },
+  "ip": {
+    "_说明": "命中 IP-like 时：主体仍然是核心基因（它就是要保护的东西），但禁止换主体。",
+    "risk_when_ip_like": "high"
+  },
+
+  "pattern_mode": {
+    "_说明": "通版重复图案（波点、条纹、格子、碎花这类，没有单一主体）：五官/表情/动作/换主体/换场景这些算子不适用，应该走「母题变异 + 构图 + 配色 + 风格」。实测「粉色小小波点」就是这一类。",
+    "detect_composition": ["repeated-pattern", "full-frame"],
+    "elements_gte": 8,
+    "motif_count_gte": 8,
+    "_motif_count说明": "反复出现的小图形个数 ≥ 这个值，就算通版图案（波点这种小点会被连通域过滤掉，所以要单独数）。",
+    "core_gene_weight": 0.9,
+    "allowed_operators": ["motif", "composition", "color", "style", "photo_pose"],
+    "_photo_pose说明": "通版图案里若嵌了实拍照片（例如豹纹底+幼豹照片贴纸），照片那块的姿态可以单独换，底纹不动。",
+    "_allowed说明": "通版图案不做「加一个道具」——整版都是重复小图形，单独加一颗星星没有意义。",
+    "blocked_operators": ["subject", "expression", "pose", "semantic"]
+  },
+
+  "single_subject_mode": {
+    "_说明": "有单一主体的款（猪、猫、少女这类）走常规算子；母题变异只对图案型有意义。",
+    "blocked_operators": ["motif"]
+  }
+}

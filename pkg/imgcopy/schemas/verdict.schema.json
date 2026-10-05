@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "liebian/verdict.schema.json",
+  "title": "Verdict",
+  "type": "object",
+  "required": ["gate", "passed", "reason_codes"],
+  "properties": {
+    "gate": { "enum": ["G0", "G1", "G2", "G3"] },
+    "child_id": { "type": "string" },
+    "passed": { "type": "boolean" },
+    "score": { "type": ["number", "null"] },
+    "reason_codes": { "type": "array", "items": { "type": "string" } },
+    "detail": { "type": "object" },
+    "judge_model": { "type": ["string", "null"] },
+    "worth_testing": { "type": ["boolean", "null"] },
+    "difference_summary": { "type": ["string", "null"] },
+    "created_at": { "type": "string" }
+  }
+}

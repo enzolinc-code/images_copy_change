@@ -1,0 +1,596 @@
+{
+  "_说明": "变异算子。代码里不出现算子名——加算子只改这个文件。dose 表是 mutation_strength 的唯一来源。",
+  "color": {
+    "zh": "配色变异",
+    "name_words": [
+      "蓝",
+      "粉",
+      "绿",
+      "米",
+      "灰"
+    ],
+    "target_types": [
+      "palette"
+    ],
+    "target_gene_ids": [
+      "palette_family",
+      "palette_background",
+      "palette_dominant",
+      "palette_accent",
+      "palette_extra"
+    ],
+    "_target说明": "配色变异是唯一允许动 palette_family（色系家族）的算子 —— 用户明确要「开跨色系」。其它算子仍然不许碰色系。",
+    "requires": [
+      "palette"
+    ],
+    "target_region": "background",
+    "region_lock": true,
+    "keeps": [
+      "subject",
+      "composition",
+      "style"
+    ],
+    "dose": {
+      "L1": 0.2,
+      "L2": 0.4
+    },
+    "values": [
+      {
+        "text": "底色换成米杏色（暖调米色，饱和度与明度档位不变；主体与文字不变）",
+        "name_word": "米",
+        "target_gene_ids": [
+          "palette_family",
+          "palette_background",
+          "palette_dominant"
+        ]
+      },
+      {
+        "text": "底色换成抹茶绿（低饱和绿，明度档位不变；主体与文字不变）",
+        "name_word": "绿",
+        "target_gene_ids": [
+          "palette_family",
+          "palette_background",
+          "palette_dominant"
+        ]
+      },
+      {
+        "text": "底色换成雾霾蓝紫（冷调、低饱和，明度档位不变；主体与文字不变）",
+        "name_word": "紫",
+        "target_gene_ids": [
+          "palette_family",
+          "palette_background",
+          "palette_dominant"
+        ]
+      },
+      {
+        "text": "底色换成奶油白（近白的暖白，笔触与肌理保留）",
+        "name_word": "白",
+        "target_gene_ids": [
+          "palette_family",
+          "palette_background",
+          "palette_dominant"
+        ]
+      },
+      {
+        "text": "把{点缀色}改成深墨绿，底色与排布不变",
+        "name_word": "墨",
+        "target_gene_ids": [
+          "palette_accent",
+          "palette_extra"
+        ]
+      }
+    ],
+    "_values说明": "允许跨色系（用户 2026-10-03 明确要求）。实测教训：写「换成更暖/更冷的邻近色系」这种相对说法，模型几乎不改；必须给**具体颜色**（米杏/抹茶绿/雾霾蓝紫/奶油白），差异才看得出来。",
+    "negative": [
+      "不要改变主体的形状、位置与尺寸",
+      "不要改变线稿风格",
+      "不要加入新元素"
+    ]
+  },
+  "composition": {
+    "zh": "构图变异",
+    "changed_hint": "整张图的排布方式（主体占比、留白、元素数量）",
+    "changed_hint_pattern": "点阵的排布方式（点径、点距、排列角度、密度）",
+    "name_words": [
+      "满幅",
+      "下移",
+      "留白",
+      "密排"
+    ],
+    "target_types": [
+      "composition"
+    ],
+    "requires": [
+      "composition"
+    ],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [
+      "subject",
+      "palette",
+      "style"
+    ],
+    "dose": {
+      "L1": 0.3,
+      "L2": 0.5
+    },
+    "values": [
+      "把主体缩小到画布约 1/4，四周排满同款小主体（满版小图错落排布）",
+      "主体左右镜像各一份，做成对称双主体构图（中间留一道缝）",
+      "只保留主体头部特写并放大到溢出画面（四周元素被裁掉）",
+      "主体移到左下角，右上角大面积留白，装饰元素跟着让位",
+      "上下两组主体错位叠放（上面一组小、下面一组大）",
+      "主体略微放大并居中",
+      "主体下移，上方留白增加",
+      "主体缩小，四周元素变多",
+      "改为满幅重复排布"
+    ],
+    "values_pattern": [
+      "把整个{骨架}放大约 30%（母题与底色不变）",
+      "改成细密小母题（母题明显变小、数量明显变多；底色与骨架方向不变）",
+      "{骨架}改成正方网格排布（母题、间距、底色都不变）",
+      "把{骨架}的间距拉开一倍，画面更透气（母题与底色不变）"
+    ],
+    "_values_pattern说明": "通版重复图案没有「主体」，构图变异要落成「点径/点距/排布角度」这类量。",
+    "negative": [
+      "不要改变主体造型",
+      "不要改变配色体系"
+    ],
+    "_values说明": "新写的创意构图排前面（少出几张时优先抽到它们），常规的四条留在后面。"
+  },
+  "accessory": {
+    "zh": "道具变异",
+    "changed_hint": "在主体旁边新增的一个道具",
+    "name_words": [
+      "花",
+      "镜",
+      "结",
+      "星"
+    ],
+    "target_types": [],
+    "requires": [
+      "prop",
+      "subject"
+    ],
+    "target_region": "background",
+    "region_lock": true,
+    "keeps": [
+      "subject",
+      "composition",
+      "palette",
+      "style",
+      "emotion"
+    ],
+    "dose": {
+      "L1": 0.25,
+      "L2": 0.45
+    },
+    "values": [
+      "加一朵小花在主体旁边",
+      "加一副墨镜在主体上",
+      "加一条蝴蝶结",
+      "加一颗星星点缀"
+    ],
+    "negative": [
+      "不要遮挡主体的五官",
+      "不要增加超过一个道具",
+      "不要改变留白比例"
+    ]
+  },
+  "expression": {
+    "zh": "表情变异",
+    "changed_hint": "主体的表情神态（眯眼、张嘴、坏笑这类）——物种、外形、尺寸、位置都不变",
+    "name_words": [
+      "困",
+      "笑",
+      "呆",
+      "羞",
+      "坏"
+    ],
+    "target_types": [
+      "subject"
+    ],
+    "requires": [
+      "subject"
+    ],
+    "target_region": "subject",
+    "region_lock": false,
+    "keeps": [
+      "composition",
+      "palette",
+      "style",
+      "emotion"
+    ],
+    "dose": {
+      "L1": 0.3,
+      "L2": 0.5
+    },
+    "values": [
+      "困倦眯眼",
+      "开心张嘴笑",
+      "面无表情发呆",
+      "害羞脸红",
+      "坏笑"
+    ],
+    "negative": [
+      "不要改变主体物种",
+      "不要改变主体大小与位置"
+    ]
+  },
+  "pose": {
+    "zh": "动作变异",
+    "changed_hint": "主体的动作姿态（躺、坐、抱、探这类）——物种与位置不变",
+    "name_words": [
+      "躺",
+      "坐",
+      "抱",
+      "伸",
+      "探"
+    ],
+    "target_types": [
+      "subject"
+    ],
+    "requires": [
+      "subject"
+    ],
+    "target_region": "subject",
+    "region_lock": false,
+    "keeps": [
+      "composition",
+      "palette",
+      "style",
+      "emotion"
+    ],
+    "dose": {
+      "L1": 0.3,
+      "L2": 0.5
+    },
+    "values": [
+      "改成躺着",
+      "改成坐着",
+      "改成抱着东西",
+      "改成探头",
+      "改成伸展"
+    ],
+    "negative": [
+      "不要改变主体物种",
+      "不要改变主体在图里的位置与占比"
+    ]
+  },
+  "subject": {
+    "zh": "主体替换",
+    "changed_hint": "主体的具体形象（换成同尺寸、同情绪、同风格的另一形象）——构图、配色、风格不变",
+    "name_words": [
+      "狗",
+      "熊",
+      "兔",
+      "怪"
+    ],
+    "target_types": [
+      "subject"
+    ],
+    "requires": [
+      "subject"
+    ],
+    "target_region": "subject",
+    "region_lock": false,
+    "keeps": [
+      "composition",
+      "palette",
+      "style",
+      "emotion"
+    ],
+    "dose": {
+      "L1": 0.4,
+      "L2": 0.6
+    },
+    "values": [
+      { "text": "把主体换成一只圆头小老鼠（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "鼠" },
+      { "text": "把主体换成一只圆头小牛（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "牛" },
+      { "text": "把主体换成一只圆头小羊（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "羊" },
+      { "text": "把主体换成一条圆头小蛇（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "蛇" },
+      { "text": "把主体换成一只圆头小马（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "马" },
+      { "text": "把主体换成一只圆头小猴子（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "猴" },
+      { "text": "把主体换成一只圆头小鸡（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "鸡" },
+      { "text": "把主体换成一只圆头小狗（同样尺寸与位置、同样的粗黑描边与奶油色系、同样的红披风）", "name_word": "狗" },
+      { "text": "把主体换成一只圆头小兔子（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "兔" },
+      { "text": "把主体换成一只圆头小老虎（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "虎" },
+      { "text": "把主体换成一条圆头卡通小龙（同样尺寸与位置、同样的粗黑描边与奶油色系）", "name_word": "龙" },
+      "换成同情绪的另一动物",
+      "换成同尺寸的另一卡通形象"
+    ],
+    "blocked_when": [
+      "ip_risk == high"
+    ],
+    "_blocked说明": "母款主体命中 IP-like 时禁用本算子，避免把侵权风险放大成 10 倍。",
+    "negative": [
+      "不要改变主体尺寸与位置",
+      "不要改变配色体系",
+      "不要改变背景处理方式"
+    ]
+  },
+  "style": {
+    "zh": "风格变异",
+    "name_words": [
+      "蜡笔",
+      "马克",
+      "复古",
+      "扁平"
+    ],
+    "target_types": [
+      "style"
+    ],
+    "changed_hint": "笔触与画风（在同类手绘/插画范围内迁移）——主体与构图不变",
+    "requires": [
+      "style"
+    ],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [
+      "subject",
+      "composition",
+      "palette",
+      "emotion"
+    ],
+    "dose": {
+      "L1": 0.35,
+      "L2": 0.6
+    },
+    "values": [
+      "改成蜡笔手绘",
+      "改成马克笔质感",
+      "改成复古印刷质感",
+      "改成扁平插画"
+    ],
+    "_约束": "只在「手绘/插画」大类内部迁移；禁止跨到照片写实或 3D 渲染（会毁掉爆款情绪）。",
+    "negative": [
+      "不要变成照片写实",
+      "不要变成 3D 渲染",
+      "不要改变主体与构图"
+    ]
+  },
+  "motif": {
+    "zh": "母题变异",
+    "changed_hint": "反复出现的那个小图形（母题）——排列节奏、点距、密度、底色、风格都不变",
+    "name_words": [
+      "星",
+      "花",
+      "心",
+      "果",
+      "蝶"
+    ],
+    "target_types": [],
+    "target_gene_ids": [
+      "pattern_family"
+    ],
+    "_说明": "通版重复图案专用：换掉那个反复出现的小图形（圆点→星星/小花/爱心），排列节奏、点距、密度、底色、风格都不动。这是波点/条纹类款最值钱的裂变方向。",
+    "requires": [],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [
+      "palette",
+      "style",
+      "emotion",
+      "composition"
+    ],
+    "dose": {
+      "L1": 0.35,
+      "L2": 0.55
+    },
+    "values": [
+      "把{母题}换成小星星（大小、排布、底色完全不变）",
+      "把{母题}换成手绘小花（大小、间距与底色不变）",
+      "把{母题}换成小爱心（大小、间距与底色不变）",
+      "把{母题}换成小蝴蝶结（大小、间距与底色不变）",
+      "把{母题}换成小圆果子（大小、间距与底色不变）"
+    ],
+    "negative": [
+      "不要改变排列节奏、点距与密度",
+      "不要改变底色",
+      "不要改变笔触风格",
+      "不要加别的元素"
+    ],
+    "_占位符说明": "{母题}/{骨架}/{点缀色}/{底色} 由程序按母款实际形态替换（波点款=圆点，菱形格款=丘比特小天使）。"
+  },
+  "_旧style占位": {
+    "zh": "（已废弃，勿用）",
+    "changed_hint": "笔触与画风（在同类手绘/插画范围内迁移）——主体与构图不变",
+    "name_words": [
+      "蜡笔",
+      "马克",
+      "复古",
+      "扁平"
+    ],
+    "target_types": [
+      "style"
+    ],
+    "requires": [
+      "style"
+    ],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [
+      "subject",
+      "composition",
+      "palette",
+      "emotion"
+    ],
+    "dose": {
+      "L1": 0.35,
+      "L2": 0.6
+    },
+    "values": [
+      "改成蜡笔手绘",
+      "改成马克笔质感",
+      "改成复古印刷质感",
+      "改成扁平插画"
+    ],
+    "_约束": "只在「手绘/插画」大类内部迁移；禁止跨到照片写实或 3D 渲染（会毁掉爆款情绪）。",
+    "negative": [
+      "不要变成照片写实",
+      "不要变成 3D 渲染",
+      "不要改变主体与构图"
+    ]
+  },
+  "semantic": {
+    "zh": "语义变异",
+    "changed_hint": "情绪的具体表达方式（情绪本身保留）——构图、风格、配色不变",
+    "name_words": [
+      "场景",
+      "新意",
+      "换景"
+    ],
+    "target_types": [
+      "emotion"
+    ],
+    "requires": [
+      "emotion"
+    ],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [
+      "composition",
+      "style",
+      "palette"
+    ],
+    "dose": {
+      "L1": 0.3,
+      "L2": 0.55
+    },
+    "values": [
+      "保留治愈慵懒情绪，换成同情绪的另一场景",
+      "保留搞怪情绪，换成同情绪的另一主体",
+      "保留玩趣情绪，换成同情绪的另一道具"
+    ],
+    "_说明": "保留核心情绪价值，只换具体表达（需求第 7-H）。",
+    "negative": [
+      "不要改变整体情绪基调",
+      "不要改变构图骨架"
+    ]
+  },
+  "combo": {
+    "zh": "组合变异",
+    "name_words": [
+      "混搭",
+      "叠搭"
+    ],
+    "target_types": [],
+    "requires": [],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [],
+    "dose": {
+      "L2": 0.5,
+      "L3": 0.7
+    },
+    "_说明": "两个算子叠加，必须显式记录组成，不能当作单变量归因。占比默认 ≤ 20%。",
+    "parts": [
+      [
+        "color",
+        "accessory"
+      ],
+      [
+        "color",
+        "expression"
+      ],
+      [
+        "composition",
+        "accessory"
+      ]
+    ],
+    "negative": [
+      "不要同时改变主体与风格"
+    ]
+  },
+  "_dose说明": "用户原始需求的 0.2/0.4/0.6/0.8 映射：微裂变 L1≈0.2-0.4、轻裂变 L2≈0.4-0.6、中裂变 L3≈0.6-0.8；1.0 在 settings.limits.max_strength 处被禁止。",
+  "photo_pose": {
+    "zh": "照片姿态变异",
+    "changed_hint": "画中那张方形照片里主体的姿势（照片方框的位置、大小、描边与四周底纹都不动）",
+    "name_words": ["趴", "躺", "坐", "歪", "哈"],
+    "requires": [],
+    "target_types": [],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": ["palette", "composition", "style", "emotion"],
+    "dose": { "L1": 0.35, "L2": 0.55 },
+    "values": [
+      "把画中那张方形照片换成同一只幼豹的另一个姿势：趴着抬头直视镜头（照片方框的位置、大小、边与四周豹纹底纹完全不变）",
+      "把画中那张方形照片换成同一只幼豹侧躺闭眼打盹的姿势（照片方框与四周豹纹底纹完全不变）",
+      "把画中那张方形照片换成同一只幼豹坐起来伸爪的姿势（照片方框与四周豹纹底纹完全不变）",
+      "把画中那张方形照片换成同一只幼豹趴在粉布上歪头看的姿势（照片方框与四周豹纹底纹完全不变）",
+      "把画中那张方形照片换成同一只幼豹张嘴打哈欠的姿势（照片方框与四周豹纹底纹完全不变）"
+    ],
+    "_约束": "只换照片内容（姿势），底纹、照片方框、蝴蝶、蝴蝶结都不许动。",
+    "negative": ["不要改变豹纹底纹的点距、大小与排布", "不要移动或改变照片方框的位置与大小", "不要删掉画面里的蝴蝶", "不要加文字"]
+  },
+
+  "hero_split": {
+    "zh": "主角分列",
+    "changed_hint": "画面里的人物：把一个双人场景拆成只要一个人的单人画面",
+    "name_words": ["女", "男"],
+    "requires": [],
+    "target_types": [],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": ["palette", "style", "emotion"],
+    "dose": { "L1": 0.5 },
+    "values": [
+      "只保留女方主角一个人：凤冠、蓝红婚服、水彩国风画风、喜庆红调与纸纹肌理都保持不变；画面里只留她一个，背景的幔帐、灯笼、梅花枝与窗棂照原样保留",
+      "只保留男方主角一个人：乌纱帽、红袍、水彩国风画风、喜庆红调与纸纹肌理都保持不变；画面里只留他一个，背景的幔帐、灯笼、梅花枝与窗棂照原样保留"
+    ],
+    "_说明": "把一个双人场景图拆成两张单人画面（男女主角各一张）。这是「主体数量」的变化，与主体替换/表情/构图都不等价，所以单列一个算子。",
+    "negative": ["画面里不要再出现第二个人", "不要改变画风、配色与纸纹肌理", "不要加文字或水印"]
+  },
+
+  "style_transfer": {
+    "zh": "风格迁移（多参考图）",
+    "changed_hint": "把「图二」里的人物，用「图一」的画风重新画一遍（人物保留、画风换成图一那套）",
+    "name_words": ["女", "男"],
+    "requires": [],
+    "target_types": [],
+    "target_region": "global",
+    "region_lock": false,
+    "keeps": [],
+    "dose": { "L1": 0.6 },
+    "values": [
+      "图一是风格母款（圆头萌系：粗黑描边、奶油色系、红披风、蓝色颗粒底），图二是人物参考。请把图二里的女方主角（凤冠与婚服那身）按图一的画风重画成一张圆头小女孩：脸型圆、眼睛大而简、粗黑描边、奶油色皮肤、穿红披风那种萌系质感；构图仍是单人立绘、居中、干净留白，背景用图一那种蓝色颗粒底，不要出现第二个人",
+      "图一是风格母款（圆头萌系：粗黑描边、奶油色系、红披风、蓝色颗粒底），图二是人物参考。请把图二里的男方主角（乌纱帽与红袍那身）按图一的画风重画成一张圆头小男孩：脸型圆、眼睛大而简、粗黑描边、奶油色皮肤、穿红披风那种萌系质感；构图仍是单人立绘、居中、干净留白，背景用图一那种蓝色颗粒底，不要出现第二个人"
+    ],
+    "_说明": "多参考图算子：图一=母款（定画风），图二=附加参考图（定人物/服装，来自 parent.json 的 extra_refs）。",
+    "negative": ["不要照搬图二的水彩与纸纹质感", "不要出现第二个人", "不要加文字或水印"]
+  },
+
+  "textfix": {
+    "zh": "文字替换",
+    "changed_hint": "画面里的文字内容（位置、大小、颜色、字体感觉不变）",
+    "requires": [
+      "text"
+    ],
+    "target_types": [],
+    "target_gene_ids": [
+      "text_slot"
+    ],
+    "target_region": "text",
+    "region_lock": true,
+    "keeps": [
+      "palette",
+      "composition",
+      "style",
+      "emotion",
+      "subject"
+    ],
+    "dose": {
+      "L1": 0.25
+    },
+    "values": [
+      "把绿色区域里的原字样换成「{新文字}」——字体感觉、粉色闪粉质感、大小与位置都按原来的样式"
+    ],
+    "negative": [
+      "不要保留原字样",
+      "不要改变文字的位置与大小",
+      "不要改变底色",
+      "不要改动绿色区域以外的任何地方"
+    ],
+    "_说明": "用于合规改字（例如把商标字样换成无商标短词）。走区域锁定重绘：文字区涂绿交给模型重画。"
+  }
+}

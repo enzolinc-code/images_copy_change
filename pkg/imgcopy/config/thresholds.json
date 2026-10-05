@@ -1,0 +1,127 @@
+{
+  "_说明": "相似度与质检阈值。**当前是占位值**，必须由 tools/calibrate_thresholds.py 用人工标注标定后替换（见 系统设计.md R5）。",
+  "calibrated": true,
+  "calibrated_at": "2026-10-04T19:14:16+08:00",
+  "similarity": {
+    "_三个分区": "zone_subject（主体裁剪区）/ zone_frame（整幅）/ zone_color（颜色直方图）",
+    "_主指标": "zone_change = 真正改动过的像素占比。'太像' = 几乎没动过任何地方。",
+    "too_similar_change_max": 0.0202,
+    "_too_similar说明": "改动面积 < 8% → 判定「几乎复制母款」，没有测试价值。",
+    "too_different_change_min": 0.85,
+    "too_different_color_max": 0.35,
+    "pattern_motif_delta_min": 0.1108,
+    "pattern_bg_delta_min": 0.1108,
+    "pattern_lattice_same_min": 0.97,
+    "_pattern说明": "通版图案改看三个轴：母题像素变化、背景变化、排布周期（FFT 频谱相关性）。三个轴都没动才算「太像」。",
+    "_too_different说明": "改动面积 > 85% 且颜色分布相关性 < 0.35 → 判定「已经看不出是同一系列」。",
+    "too_similar_at": 0.92,
+    "too_different_at": 0.55,
+    "_旧阈值说明": "too_similar_at / too_different_at 是第一版按整幅灰度差定的，实测会误杀（猪换兔子都被算成 0.95），已改用 zone_change，这两个值保留只作参考。",
+    "child_child_max": 0.9,
+    "_child_child说明": "批次内两张子款的像素差异面积 < 这个值 → 算重复，只留一张（未标定，先用 0.06）。",
+    "min_pairwise_coverage": 0.8,
+    "too_different_frame_max": 0.65,
+    "pattern_too_different_change_min": 0.5943,
+    "child_child_change_max": 0.06,
+    "pattern_motif_mean_max": 0.2662,
+    "pattern_change_min": 0.0659
+  },
+  "quality_gate": {
+    "blur_min_laplacian_var": 60.0,
+    "blur_ratio_min": 0.45,
+    "_blur_ratio说明": "子款清晰度 / 母款清晰度 的下限（比绝对值稳）。",
+    "_blur说明": "拉普拉斯方差下限。插画类偏低，标定时一并校准。",
+    "subject_missing_area_ratio": 0.35,
+    "_subject说明": "子款主体面积 / 母款主体面积 低于这个比例 → 疑似主体缺失。",
+    "subject_drift_area_ratio": 2.2,
+    "_drift说明": "高于这个比例 → 主体失控放大。",
+    "palette_drift_max_hue_shift": 60,
+    "temperature_delta_max": 0.35,
+    "_temperature说明": "冷暖偏移超过这个值算「跳色系」（改底色是允许的，但要报出来给人看）。",
+    "max_colors": 12,
+    "color_count_ratio_max": 1.6,
+    "gradient_ratio_max": 0.45,
+    "edge_density_ratio_max": 2.2,
+    "subject_shift_max": 0.06,
+    "subject_iou_min": 0.9,
+    "_subject_iou说明": "区域锁定类子款（配色/道具）要求主体掩膜 IoU ≥ 这个值（贴回主体后应接近 1）。",
+    "camera_overlap_delta_max": 0.25,
+    "text_keep_min_ratio": 0.35,
+    "text_replace_max_similarity": 0.97,
+    "_text_replace说明": "母款里有要求替换掉的文字（如商标）时，子款文字区相似度高于这个值 → 判 TEXT_NOT_REPLACED（没改掉，不能用）。",
+    "_text_keep说明": "母款有文字时，子款文字区像素量至少要保留到母款的这个比例，否则算 TEXT_LOST。"
+  },
+  "skeleton": {
+    "min_core_gene_keep": 0.85,
+    "_说明": "计划层要求：每个子款保留的核心基因权重和 ≥ 母款核心基因总权重 × 该比例。"
+  },
+  "calibration": {
+    "samples": 53,
+    "ranges": {
+      "single_too_similar_change_max": 0.0202,
+      "single_too_different_frame_max": 0.7733,
+      "single_samples": {
+        "太像": 3,
+        "刚好": 12,
+        "太远": 8
+      },
+      "single_ranges": {
+        "太像": [
+          0.0,
+          0.0128
+        ],
+        "刚好": [
+          0.0275,
+          0.9035
+        ],
+        "太远": [
+          0.9301,
+          0.9985
+        ]
+      },
+      "single_frame_ranges": {
+        "刚好": [
+          0.7231,
+          0.9854
+        ],
+        "太远": [
+          0.583,
+          0.8236
+        ]
+      },
+      "pattern_too_similar_change_max": 0.0659,
+      "pattern_too_different_change_min": 0.2662,
+      "pattern_motif_mean_ranges": {
+        "刚好": [
+          0.0744,
+          0.3613
+        ],
+        "太远": [
+          0.1711,
+          0.8273
+        ]
+      },
+      "pattern_samples": {
+        "太像": 3,
+        "刚好": 15,
+        "太远": 12
+      },
+      "pattern_ranges": {
+        "太像": [
+          0.0,
+          0.0
+        ],
+        "刚好": [
+          0.1319,
+          1.0
+        ],
+        "太远": [
+          0.4351,
+          1.0
+        ]
+      }
+    },
+    "labels_file": "D:\\AutoTaobao\\shangji\\liebian\\data\\calibration\\labels.json",
+    "_single_太远说明": "加入构图变异样本后，结构相关已无法分开太远与刚好（刚好最低 0.7231 / 太远最高 0.8236，重叠）。阈值降到 0.65，只拦最不像的；远端交人工看。"
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "_说明": "可移植版默认配置。相对路径一律按 IMGCOPY_HOME（默认当前目录）解析；绝对路径原样使用。你自己的配置放到 <IMGCOPY_HOME>/config/settings.json 会覆盖本文件同名项。",
+  "version": 1,
+
+  "runtime": {
+    "python": "python",
+    "_说明": "本地步骤用到的解释器。需要 numpy / Pillow / opencv-python，缺哪个就先 pip 装。"
+  },
+
+  "paths": {
+    "_说明": "相对路径按 IMGCOPY_HOME 解析；绝对路径原样使用。",
+    "pattern_library": "patterns",
+    "_pattern_library说明": "母款成图所在的图案库（可含日期子目录）。ingest 在这里按设计名找图。",
+    "pattern_process": "patterns/_process",
+    "_pattern_process说明": "补全区的 <设计名>*_need.png 掩码目录，可选。",
+    "listing_assets": "listing_assets",
+    "templates_dir": "templates",
+    "_templates_dir说明": "手机壳定位模板目录。没有模板也能跑图案裂变，只是不能出印刷版。",
+    "print_dir": "print",
+    "_print_dir说明": "印刷文件输出目录（handoff --drop 时用）。",
+    "styles_dir": "styles",
+    "_styles_dir说明": "风格卡目录：styles/<风格id>/style.json，plan --style <id> 会用。",
+    "upstream_db": "cekuan.db",
+    "_upstream_db说明": "上游测款库（SQLite）。export-parents/doctor 用它；没有就跳过导出，直接手写名单。",
+    "baokuan_db": "baokuan.db",
+    "_baokuan_db说明": "爆款打分系统的库，可选；没有就只按测款库口径筛。",
+    "ledger": "上架台账.md",
+    "parents_dir": "parents",
+    "out_dir": "out",
+    "data_dir": "data",
+    "job_dir": "out/_jobs",
+    "_handoff说明": "交付命名模板。{mmdd}=当天 MMDD，{design}=子款名，{kind}=印刷/预览/空。",
+    "handoff": {
+      "print_name_template": "M{mmdd}-{design}_{kind}.png",
+      "print_flat_template": "M{mmdd}-{design}.png",
+      "print_kinds": ["印刷", "预览", ""],
+      "library_name_template": "M{mmdd}{design}.png"
+    }
+  },
+
+  "upstream": {
+    "_说明": "母款名单口径。本系统不判爆款，只按这个口径从上游库里取数。",
+    "source": "baokuan",
+    "_source说明": "baokuan = 读爆款打分系统已经判过 A/B/C/D 的池子；cekuan = 用测款库自己按窗口筛。",
+    "fallback_cekuan": true,
+    "min_grade": "B",
+    "window_days": 7,
+    "min_pay_byr": 1,
+    "_min_pay_byr说明": "7 天内买家数下限。",
+    "min_intent": 1,
+    "_min_intent说明": "加购+收藏之和达到这个数也算候选；设 0 关掉这条。",
+    "require_artwork": true,
+    "_require_artwork说明": "母款必须在图案库里有成图。",
+    "dirty_policy": "exclude_rows",
+    "_dirty_policy可选": {
+      "exclude_rows": "把 quality != ok 的那一天整行剔除，只用干净行汇总",
+      "reject_item": "窗口内只要有脏行就整款不要（更严）"
+    },
+    "min_clean_days": 1,
+    "skip_suspect": false
+  },
+
+  "canvas": {
+    "width": 1252,
+    "height": 2232,
+    "_说明": "母款图案画布规格。",
+    "aspect_ratio": "9:16"
+  },
+
+  "generator": {
+    "type": "replay",
+    "_type可选": ["replay", "o1key", "comfyui"],
+    "_type说明": "replay = 不花钱的假后端（默认，用来跑通流程）；真出图改成 o1key 并填 generator.o1key。",
+    "o1key": {
+      "python": "python",
+      "script": "path/to/o1key_image.py",
+      "_script说明": "O1Key 生图脚本的绝对路径。本机可指到 o1key-gpt-image 技能的 scripts/o1key_image.py。",
+      "job_dir": "out/_jobs/o1key",
+      "size": "2K",
+      "ar": "9:16",
+      "quality": "auto",
+      "timeout": 900,
+      "n": 1,
+      "background": "auto",
+      "output_format": "png"
+    },
+    "comfyui": {
+      "root": "path/to/ComfyUI",
+      "base_port": 8188,
+      "auto_start": false,
+      "startup_timeout": 120
+    },
+    "replay": {
+      "dir": "tests/fixtures/replay",
+      "_说明": "按 prompt_hash 从目录里取预设图；取不到就生成一张占位图。用于跑测试与流程回归。"
+    }
+  },
+
+  "vision": {
+    "_说明": "视觉语义标签与质检判断用的通道。",
+    "type": "agent",
+    "_type可选": ["agent", "gemini-web", "none"],
+    "_agent说明": "Codex 在环：写请求文件 → 读答案文件，适合没有无人值守视觉 API 的情况。",
+    "preview_max_edge": 1280,
+    "_preview说明": "送进模型/人眼前一律先降采样，避免会话被大图撑爆。",
+    "preview_jpeg_quality": 80,
+    "cache": true,
+    "gemini_web": {
+      "bun": "bun",
+      "script": "path/to/gemini-web/main.ts",
+      "model": "gemini-3-pro",
+      "timeout": 300
+    }
+  },
+
+  "budget": {
+    "max_images_per_run": 10,
+    "_max_images说明": "单母款一次生成的图片上限。",
+    "require_confirm_above": 10,
+    "cache_by_prompt_hash": true,
+    "dry_run_default": true,
+    "_dry_run_default说明": "true = 生成命令默认只打印将要花的钱和 prompt，必须显式加 --go 才真出图。"
+  },
+
+  "limits": {
+    "max_strength": 0.8,
+    "_max_strength说明": "禁止 1.0；配置层就不可达。",
+    "max_refill_rounds": 2,
+    "max_attempts_per_child": 2,
+    "concurrency": 1,
+    "guide_protect_dilate_ratio": 0.008,
+    "composite_erode_px": 2,
+    "composite_feather_px": 4,
+    "composite_text_dilate_px": 3,
+    "min_child_kb": 40
+  }
+}

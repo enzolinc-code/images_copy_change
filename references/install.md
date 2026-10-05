@@ -42,3 +42,55 @@ python scripts/style_pack_publish.py --pack ./my_style --root D:/AutoTaobao/styl
 ## 4. 路径与配置
 
 流水线里所有路径/阈值都在 `liebian\config\settings.json`（图案库、印刷目录、生成后端、预算上限、画布尺寸），换机器只改这一个文件。风格卡库里每张卡自带 `source_parent` 与 `example_sources`，都是相对路径或绝对路径，不写死在代码里。
+
+## 5. 仓库自带的可移植流水线（`pkg/`）
+
+`pkg/` 是上面那套流水线的可移植版：**不需要本机专用路径、不需要数据库、不配任何东西就能跑通全流程**。
+适合"换台机器 / 给别人复现 / 想先看懂流程再改配置"。
+
+```bash
+# 1) 建一个工作目录（所有产物都落在这里）
+export IMGCOPY_HOME=/path/to/workdir      # PowerShell: $env:IMGCOPY_HOME="D:\work"
+
+# 2) 自检（解释器 / numpy·Pillow·opencv / 配置 / 路径 / 出图后端）
+python pkg/run.py doctor
+
+# 3) 放一张母款图案 + 一份名单，然后走一遍
+#    <workdir>/patterns/M1005波点.png
+#    <workdir>/data/inputs/parent_input.json
+#    {"parents":[{"design_name":"M1005波点","item_id":"123","data_trust":"trusted"}]}
+python pkg/run.py ingest
+python pkg/run.py analyze --all
+python pkg/run.py dna --all
+python pkg/run.py plan --all --count 3
+python pkg/run.py generate P_20261005_0001 --go     # replay 假后端：不花钱
+python pkg/run.py qc P_20261005_0001
+python pkg/run.py export P_20261005_0001
+python pkg/run.py handoff P_20261005_0001 --drop
+```
+
+### 5.1 配置怎么覆盖
+
+| 位置 | 作用 |
+|---|---|
+| `pkg/imgcopy/config/settings.json` | 随包默认值（路径全部相对 `IMGCOPY_HOME`） |
+| `<IMGCOPY_HOME>/config/settings.json` | 你自己的覆盖项，**只覆盖同名项**，其余保持默认 |
+| `pkg/imgcopy/config/{geometry,taxonomy,operators,matrix,thresholds,naming,dna_rules}.json` | 几何标定、词表、算子取值池、剂量矩阵、相似度阈值、命名规则 |
+
+最常改的三处：
+
+1. `paths.pattern_library`：母款成图目录（相对 `<IMGCOPY_HOME>`）。
+2. `generator.type`：`replay`（不花钱，默认）→ `o1key` / `comfyui` 才是真出图。
+3. `paths.template_tool` + `paths.template_python`：印刷模板工具（`put-into-template.py`）。
+   不配的话，`handoff` 只在 `geometry.calibrated=true` 时用几何兜底出印刷版；没标定就只出
+   「整幅成品图」（那本来就是能直接印刷的成品），并明确告诉你为什么不生成。
+
+### 5.2 与本机版（`liebian`）的差别
+
+| | 本机版 `liebian` | 可移植版 `pkg/` |
+|---|---|---|
+| 配置 | 项目里的绝对路径 | 随包配置 + `IMGCOPY_HOME` |
+| 状态 | SQLite `data/liebian.db` | JSON 文件 `data/state.json` |
+| 印刷工具 | 固定指向 pattern-extract | 配置项，可缺省（缺省时几何兜底 / 只出整幅成品图） |
+| 出图后端 | 默认 O1Key（付费） | 默认 replay（免费假后端） |
+| 用途 | 日常生产 | 复现、教学、二次开发、回归测试 |

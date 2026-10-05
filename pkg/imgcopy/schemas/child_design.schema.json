@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "liebian/child_design.schema.json",
+  "title": "ChildDesign",
+  "type": "object",
+  "required": ["child_id", "parent_id", "generation", "mutation_operator", "mutation_strength",
+               "preserved_genes", "changed_genes", "prompt", "prompt_hash", "reference_image",
+               "reference_hash", "generation_model", "image", "image_hash", "status"],
+  "properties": {
+    "child_id": { "type": "string" },
+    "child_name": { "type": "string", "description": "可直接进上架链路的设计名（≤7 汉字）" },
+    "parent_id": { "type": "string" },
+    "generation": { "type": "integer", "minimum": 1 },
+    "mutation_operator": { "type": "string" },
+    "operator_parts": { "type": "array", "items": { "type": "string" } },
+    "dose": { "type": "string" },
+    "mutation_strength": { "type": "number", "minimum": 0, "maximum": 0.8 },
+    "preserved_genes": { "type": "array", "items": { "type": "string" } },
+    "changed_genes": { "type": "array", "items": { "type": "string" } },
+    "prompt": { "type": "string", "minLength": 10 },
+    "prompt_hash": { "type": "string" },
+    "reference_image": { "type": "string" },
+    "reference_hash": { "type": "string" },
+    "generation_model": { "type": "string" },
+    "generation_params": { "type": "object" },
+    "seed": { "type": ["string", "null"] },
+    "image": { "type": "string" },
+    "image_hash": { "type": "string" },
+    "quality_score": { "type": ["number", "null"] },
+    "similarity_score": {
+      "type": ["object", "null"],
+      "properties": {
+        "to_parent": { "type": "number" },
+        "zone_subject": { "type": "number" },
+        "zone_frame": { "type": "number" },
+        "zone_color": { "type": "number" }
+      }
+    },
+    "status": { "enum": ["planned", "generated", "passed", "rejected", "selected", "exported", "dropped"] },
+    "cost": { "type": "object" },
+    "attempts": { "type": "integer", "minimum": 0 },
+    "reasons": { "type": "array", "items": { "type": "string" } },
+    "created_at": { "type": "string" }
+  }
+}
