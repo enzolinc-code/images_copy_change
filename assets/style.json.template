@@ -1,0 +1,36 @@
+{
+  "style_id": "改成小写英文短名",
+  "name": "中文风格名（含关键特征）",
+  "version": 1,
+  "created_at": "YYYY-MM-DD",
+  "tags": ["风格桶", "关键特征1", "关键特征2"],
+  "说明": "一句话说明这套风格固定了什么、可动什么。",
+  "source_parent": {
+    "parent_id": "P_YYYYMMDD_NNNN",
+    "design_name": "MXXXX设计名",
+    "lib_path": "D:/AutoTaobao/shangji/liebian/parents/<parent_id>/parent.png"
+  },
+  "refs": ["refs/母款-设计名.png"],
+  "canvas": { "w": 1252, "h": 2232, "ar": "9:16" },
+  "operators": {
+    "subject": {
+      "_说明": "算子取值必须是具体名词；name_word 用于子款命名，en 用于改字。",
+      "values": [
+        { "text": "把主体换成……（同样尺寸与位置、同样的描边与配色）", "name_word": "字", "en": "Word" }
+      ]
+    }
+  },
+  "text_rule": {
+    "enabled": false,
+    "template": "Blessing {en}",
+    "font": "follow_parent",
+    "prompt_note": "底部那行文字要跟着主体改：{map}。字体风格、字号、颜色、位置、两行结构与母款那行字完全一致（就用母款那种字），不要换成别的字体；除这行文字外，其它像素保持母款不动。"
+  },
+  "naming": { "pattern": "{parent_theme}{name_word}", "max_hanzi": 7 },
+  "qc": { "profile": "sticker_cute", "known_risk": ["这条风格最容易出的问题"] },
+  "examples": ["examples/01_示例.png"],
+  "example_sources": { "01_示例.png": "parents/<parent_id>/children/<child_id>.png" },
+  "how_to_use": {
+    "命令行": "python -m src.cli plan <parent_id> --count N --operators <算子> --style <style_id>"
+  }
+}
