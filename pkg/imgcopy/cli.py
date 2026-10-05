@@ -37,7 +37,7 @@ def _split(value: str | None) -> list[str] | None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(prog="liebian", description="手机壳爆款裂变系统")
+    ap = argparse.ArgumentParser(prog="imgcopy", description="参考图受控裂变流水线（可移植版）")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     sub.add_parser("doctor", help="自检")
@@ -86,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
     sub.add_parser("status", help="看进度")
 
     args = ap.parse_args(argv)
-    ctx.hr(f"liebian · {args.cmd}")
+    ctx.hr(f"imgcopy · {args.cmd}")
 
     if args.cmd == "doctor":
         from .tools import doctor
